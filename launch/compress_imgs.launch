@@ -1,6 +1,6 @@
 <launch>
-  <node pkg="image_transport" type="republish" name="compress_nuitrack" args="raw in:=/nuitrack_rgb_image compressed out:=/nuitrack_rgb_image_comp"/>
+  <node pkg="image_transport" type="republish" name="compress_nuitrack" args="raw in:=/nuitrack_rgb_img compressed out:=/nuitrack_rgb_img_comp"/>
   <node pkg="image_transport" type="republish" name="compress_mp" args="raw in:=/mp_rgb_img compressed out:=/mp_rgb_img_comp"/>
-  <node pkg="skel_publisher" type="obtain_hand_skeleton.py" name="hand_tracker"/>
-  <node pkg="skel_publisher" type="obtain_body_skeleton.py" name="body_tracker"/>
+  <node pkg="har_paper_0" type="obtain_hand_skeleton.py" name="hand_tracker"/>
+  <node pkg="har_paper_0" type="obtain_body_skeleton.py" name="body_tracker"/>
 </launch>

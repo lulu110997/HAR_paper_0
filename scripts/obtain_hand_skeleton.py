@@ -1,6 +1,6 @@
+#!/usr/bin/python3
 import sys
 import time
-from mp_viz import draw_landmarks_on_image
 import cv2
 import mediapipe as mp
 from mediapipe.tasks import python as tasks
@@ -114,9 +114,9 @@ def publish_data(result: HandLandmarkerResult, output_image: mp.Image, timestamp
 
 def main():
     rs_cam, __, rs_cam_par, rs_dist_coeff = init_rs()
-
+    model_path = "/home/louis/Data/Fernandez_HAR/hand_landmarker.task"
     options = HandLandmarkerOptions(
-        base_options=BaseOptions(model_asset_path='hand_landmarker.task', delegate=tasks.BaseOptions.Delegate.GPU),
+        base_options=BaseOptions(model_asset_path=model_path, delegate=tasks.BaseOptions.Delegate.GPU),
         running_mode=VisionRunningMode.LIVE_STREAM,
         num_hands=2,
         result_callback=publish_data)

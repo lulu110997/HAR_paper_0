@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import sys
 
 from PyNuitrack import py_nuitrack
@@ -11,9 +12,9 @@ from cv_bridge import CvBridge
 
 MILLISECONDS = 1000.0
 VISUALISE_DEPTH = 0
-VISUALISE_COLOR = 1
+VISUALISE_COLOR = 0
 rospy.init_node("body_tracking")
-image_pub = rospy.Publisher("nuitrack_rgb_image", Image, queue_size=30)
+image_pub = rospy.Publisher("nuitrack_rgb_img", Image, queue_size=30)
 skel_pub = rospy.Publisher("nuitrack_skel_data", PoseArray, queue_size=30)
 bridge = CvBridge()
 
@@ -141,13 +142,13 @@ def main(nuitrack):
             img_color = nuitrack.get_color_data()
             if skel_data.skeletons:
                 pub_skel_data(skel_data, img_color, now)
-                if VISUALISE_DEPTH:
-                    img_vis = nuitrack.get_depth_data()
-                    cv2.normalize(img_vis, img_vis, 0, 255, cv2.NORM_MINMAX)
-                    img_vis = np.array(cv2.cvtColor(img_vis, cv2.COLOR_GRAY2RGB), dtype=np.uint8)
-                    draw_skeleton(skel_data, img_vis)
-                elif VISUALISE_COLOR:
-                    draw_skeleton(skel_data, img_color)
+                # if VISUALISE_DEPTH:
+                #     img_vis = nuitrack.get_depth_data()
+                #     cv2.normalize(img_vis, img_vis, 0, 255, cv2.NORM_MINMAX)
+                #     img_vis = np.array(cv2.cvtColor(img_vis, cv2.COLOR_GRAY2RGB), dtype=np.uint8)
+                #     draw_skeleton(skel_data, img_vis)
+                # elif VISUALISE_COLOR:
+                #     draw_skeleton(skel_data, img_color)
 
             else:
                 pass

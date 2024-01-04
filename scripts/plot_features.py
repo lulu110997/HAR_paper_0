@@ -1,10 +1,16 @@
 import numpy
 import matplotlib.pyplot as plt
 import pandas as pd
+import numpy as np
 import os
 
-hs_right = pd.read_csv("../Fernandez_HAR/experiment_csvs/test0_userB.bag/body_skeleton.csv", header=None)
-# hs_right = hs_right.drop(hs_right.columns[0], axis=1)
+PATH = "../Fernandez_HAR/experiment_csvs/"
+FILENAME = "test2_userA/body_skeleton.csv"
+FILEPATH = os.path.join(PATH, FILENAME)
+########################################################################################################################
+df = pd.read_csv(FILEPATH, header=None)
+if not os.path.isfile(FILEPATH):
+    print(FILEPATH)
 STEP = 7
 
 def _normalise_skeleton_joints(df):
@@ -26,11 +32,9 @@ def _normalise_skeleton_joints(df):
     if len(skeleton_df.columns) == 148:  # Hand skeleton
         JOINT_1 = skeleton_df.iloc[:, 63:66].to_numpy(copy=True)  # MIDDLE_MCP
         JOINT_2 = skeleton_df.iloc[:, 1:4].to_numpy(copy=True)  # WRIST
-        print("hand")
     elif len(skeleton_df.columns) == 141:  # Body skeleton
         JOINT_1 = skeleton_df.iloc[:, 15:18].to_numpy(copy=True)  # TORSO
         JOINT_2 = skeleton_df.iloc[:, 22:25].to_numpy(copy=True)  # WAIST
-        print("torso")
     else:
         raise "No. columns doesn't add up"
 
@@ -48,9 +52,14 @@ def _normalise_skeleton_joints(df):
         #     except Exception as e:
         #         pass
         # Normalise joint locations
-        skeleton_df.iloc[:, i:i + 3] = (current_joint_xyz - JOINT_1) / (JOINT_1 - JOINT_2)
+        a = current_joint_xyz - JOINT_1
+        b = JOINT_1 - JOINT_2
+        skeleton_df.iloc[:, i:i + 3] = np.divide(a, b, out=np.zeros(a.shape), where=b != 0)
+        # skeleton_df.iloc[:, i:i + 3] = a/b
 
     return skeleton_df
 
-skd = _normalise_skeleton_joints(hs_right)
-skd.to_csv('del.csv', header=False)
+
+skd = _normalise_skeleton_joints(df)
+# skd.to_csv(FILEPATH.replace(".csv", "_normalised.csv"), header=False, index=False)
+
