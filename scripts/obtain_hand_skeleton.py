@@ -37,8 +37,8 @@ def init_rs():
     pipeline = rs.pipeline()
     config = rs.config()
     config.enable_device(RS_SN)
-    config.enable_stream(rs.stream.color, 1920, 1080, rs.format.bgra8, 30)
-    # config.enable_stream(rs.stream.infrared, 424, 240, rs.format.y8, 6)
+    # config.enable_stream(rs.stream.color, 1920, 1080, rs.format.bgra8, 30)
+    config.enable_stream(rs.stream.color, 848, 480, rs.format.bgra8, 60)
     cfg = pipeline.start(config)
 
     profile = cfg.get_stream(rs.stream.color)  # Fetch stream profile for depth stream
@@ -125,7 +125,7 @@ def main():
         # The landmarker is initialized. Use it here.
         with HandLandmarker.create_from_options(options) as landmarker:
 
-            rate = rospy.Rate(30)
+            rate = rospy.Rate(60)
 
             while not rospy.is_shutdown():
                 rate.sleep()
