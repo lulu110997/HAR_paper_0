@@ -43,7 +43,7 @@ class PublishSkeleton
     @param data2: the data measurement where we will find a matching data
     @param matching_data: data that matches (or closest to matching) the given timestamp within 30ms
     */
-   void find_match(const float &ts, std::deque<geometry_msgs::PoseArray> &data2, geometry_msgs::PoseArray &matching_data);
+   void find_match(const double &ts, std::deque<geometry_msgs::PoseArray> &data2, geometry_msgs::PoseArray &matching_data);
 
     std::shared_ptr<ros::NodeHandle> nh_;
     std::shared_ptr<SkeletonProcessing> skel_proc_;
