@@ -6,7 +6,7 @@ import rosbag
 
 BAG_NAME = "test3_userA.bag"
 ########################################################################################################################
-BAG_PATH = os.path.join("../Fernandez_HAR/2023_12_HAR_bags/", BAG_NAME)
+BAG_PATH = os.path.join("../Fernandez_HAR/bags/", BAG_NAME)
 SAVE_PATH = os.path.join("../Fernandez_HAR/experiment_csvs/", BAG_NAME.replace('.bag', ""))
 # Create save dir if it doesn't exist
 if not os.path.exists(SAVE_PATH):
@@ -41,7 +41,7 @@ def hs_data_to_csv():
                 skel_data = body_skel
                 WIDTH = 640
                 HEIGHT = 480
-                DEPTH = 1650
+                DEPTH = 1850
 
             else:
                 raise "Unknown topic"

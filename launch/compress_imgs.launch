@@ -5,3 +5,6 @@
   <node pkg="har_paper_0" type="obtain_body_skeleton.py" name="body_tracker"/>
   <node pkg="har_paper_0" type="har_paper_0_matching_node" name="match_measurements"/>
 </launch>
+<!--
+rosbag record -O testX_userX.bag /mp_rgb_img_comp/compressed /nuitrack_rgb_img_comp/compressed /left_hand_skel_data /right_hand_skel_data /nuitrack_skel_data /hs_left_matched /hs_right_matched /body_matched
+-->

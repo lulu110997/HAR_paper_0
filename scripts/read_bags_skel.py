@@ -7,7 +7,7 @@ import rospy
 import rosbag
 
 BAG_NAME = "test3_userA.bag"
-BAG_PATH = os.path.join("../Fernandez_HAR/2023_12_HAR_bags/", BAG_NAME)
+BAG_PATH = os.path.join("../Fernandez_HAR/bags/", BAG_NAME)
 
 # Init ros stuff
 bridge = CvBridge()
