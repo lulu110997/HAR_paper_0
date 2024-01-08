@@ -1,3 +1,4 @@
+#! /usr/bin/env python3
 import cv2
 import os
 from cv_bridge import CvBridge
@@ -5,13 +6,13 @@ import pandas as pd
 import rospy
 import rosbag
 
-BAG_NAME = "test2_userA.bag"
+BAG_NAME = "test3_userA.bag"
 BAG_PATH = os.path.join("../Fernandez_HAR/2023_12_HAR_bags/", BAG_NAME)
 
 # Init ros stuff
 bridge = CvBridge()
 rospy.init_node("rosbag_reader", anonymous=True)
-rate = rospy.Rate(30)
+rate = rospy.Rate(240)
 
 def show_img(msg):
     """
@@ -92,7 +93,7 @@ def check_hand_tracking_data():
     try:
         with rosbag.Bag(BAG_PATH) as bag:
             # Obtain all the images first
-            for topic, msg, t in bag.read_messages(topics=['/mp_rgb_img_comp/compressed', '/left_hand_skel_data', '/right_hand_skel_data']):
+            for topic, msg, t in bag.read_messages(topics=['/mp_rgb_img_comp/compressed', '/hs_left_matched', '/hs_right_matched']):
                 if rospy.is_shutdown():
                     break
                 if topic == "/mp_rgb_img_comp/compressed":
@@ -100,13 +101,13 @@ def check_hand_tracking_data():
                     cv2_img = bridge.compressed_imgmsg_to_cv2(msg, desired_encoding="bgr8")
                     img_list = cv2_img
                     height_row, width_col = cv2_img.shape[:2]
-                elif "hand" in topic:
+                elif "hs_" in topic:
                     hand_joints = []
                     hand_time = msg.header.stamp.to_sec()
                 else:
                     raise Exception(f"topic named '{topic}' does not exist")
                 try:
-                    if not hand_time == img_time:
+                    if (1/15.0) < abs(hand_time - img_time) < (1/45.0):
                         continue
                     for pose_msg in msg.poses:
                         hand_joints.append([pose_msg.position.x*width_col, pose_msg.position.y*height_row])
@@ -133,11 +134,11 @@ def check_body_tracking_data():
     joint_list = []
     try:
         with rosbag.Bag(BAG_PATH) as bag:
-            for topic, msg, t in bag.read_messages(topics=['/nuitrack_rgb_img_comp/compressed', '/nuitrack_skel_data']):
+            for topic, msg, t in bag.read_messages(topics=['/nuitrack_rgb_img_comp/compressed', '/body_matched']):
                 if topic == '/nuitrack_rgb_img_comp/compressed':
                     cv2_img = bridge.compressed_imgmsg_to_cv2(msg, desired_encoding="bgr8")
                     img_list.append(cv2_img)
-                elif topic == '/nuitrack_skel_data':
+                elif topic == '/body_matched':
                     joint_now = []
                     for pose_msg in msg.poses:
                         joint_now.append([pose_msg.position.x, pose_msg.position.y, pose_msg.position.z])
@@ -158,5 +159,5 @@ def check_body_tracking_data():
         cv2.destroyAllWindows()
 
 # check_body_tracking_data()
-# check_hand_tracking_data()
-check_pics()
+check_hand_tracking_data()
+# check_pics()

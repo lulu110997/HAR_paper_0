@@ -4,7 +4,7 @@ import pandas as pd
 import rospy
 import rosbag
 
-BAG_NAME = "test2_userA.bag"
+BAG_NAME = "test3_userA.bag"
 ########################################################################################################################
 BAG_PATH = os.path.join("../Fernandez_HAR/2023_12_HAR_bags/", BAG_NAME)
 SAVE_PATH = os.path.join("../Fernandez_HAR/experiment_csvs/", BAG_NAME.replace('.bag', ""))
@@ -24,7 +24,7 @@ def hs_data_to_csv():
     body_skel = {'time': [], 'data': []}
 
     with rosbag.Bag(BAG_PATH) as bag:
-        for topic, msg, __ in bag.read_messages(topics=['/left_hand_skel_data', '/right_hand_skel_data', '/nuitrack_skel_data']):
+        for topic, msg, __ in bag.read_messages(topics=['/hs_left_matched', '/hs_right_matched', '/body_matched']):
             if rospy.is_shutdown():
                 break
             joint_lists = []  # Store the joint locations for this timestep
@@ -36,7 +36,7 @@ def hs_data_to_csv():
             elif "right" in topic:
                 skel_data = right_hand
 
-            elif "nuitrack" in topic:
+            elif "body" in topic:
                 # Need to normalise joint locations in image coordinates as this is not done in nuitrack python SDK
                 skel_data = body_skel
                 WIDTH = 640

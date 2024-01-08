@@ -3,4 +3,5 @@
   <node pkg="image_transport" type="republish" name="compress_mp" args="raw in:=/mp_rgb_img compressed out:=/mp_rgb_img_comp"/>
   <node pkg="har_paper_0" type="obtain_hand_skeleton.py" name="hand_tracker"/>
   <node pkg="har_paper_0" type="obtain_body_skeleton.py" name="body_tracker"/>
+  <node pkg="har_paper_0" type="har_paper_0_matching_node" name="match_measurements"/>
 </launch>
