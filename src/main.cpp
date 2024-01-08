@@ -1,4 +1,4 @@
-#include <process_data.h>
+#include <publish_data.h>
 #include "ros/ros.h"
 
 int main(int argc, char **argv)
@@ -9,7 +9,8 @@ int main(int argc, char **argv)
 
     // Start the control loop
     std::shared_ptr<ros::NodeHandle> nh(new ros::NodeHandle);
-    SkeletonProcessing hithere(nh);
+    std::shared_ptr<SkeletonProcessing> skel_proc(new SkeletonProcessing(nh));
+    std::shared_ptr<PublishSkeleton> pub_skel(new PublishSkeleton(nh, skel_proc));
  
     ros::spin();
 
