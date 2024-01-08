@@ -13,9 +13,10 @@ from cv_bridge import CvBridge
 MILLISECONDS = 1000.0
 VISUALISE_DEPTH = 0
 VISUALISE_COLOR = 0
+Q_SIZE = 30
 rospy.init_node("body_tracking")
-image_pub = rospy.Publisher("nuitrack_rgb_img", Image, queue_size=30)
-skel_pub = rospy.Publisher("nuitrack_skel_data", PoseArray, queue_size=30)
+image_pub = rospy.Publisher("nuitrack_rgb_img", Image, queue_size=Q_SIZE)
+skel_pub = rospy.Publisher("nuitrack_skel_data", PoseArray, queue_size=Q_SIZE)
 bridge = CvBridge()
 
 

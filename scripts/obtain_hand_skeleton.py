@@ -16,13 +16,14 @@ from geometry_msgs.msg import PoseArray, Pose
 from collections import deque
 
 rospy.init_node("hand_tracking")
+Q_SIZE = 15
 RS_SN = '027322071961'
 # RS_SN = '017322070251'
 ns_dict = {"ns": deque(), "lock": Lock()}
 bridge = CvBridge()
-image_pub = rospy.Publisher("mp_rgb_img", Image, queue_size=30)
-left_hand_pub = rospy.Publisher("left_hand_skel_data", PoseArray, queue_size=30)
-right_hand_pub = rospy.Publisher("right_hand_skel_data", PoseArray, queue_size=30)
+image_pub = rospy.Publisher("mp_rgb_img", Image, queue_size=Q_SIZE)
+left_hand_pub = rospy.Publisher("left_hand_skel_data", PoseArray, queue_size=Q_SIZE)
+right_hand_pub = rospy.Publisher("right_hand_skel_data", PoseArray, queue_size=Q_SIZE)
 MILLISECONDS = 1000.0
 
 # Setup mediapipe
