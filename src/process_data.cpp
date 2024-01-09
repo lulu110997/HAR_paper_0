@@ -60,9 +60,9 @@ void SkeletonProcessing::publish_data()
             std::lock_guard<std::mutex> hs_right_lck(hs_right_.mtx);
             std::lock_guard<std::mutex> body_lck(body_.mtx);
             // Obtain skeleton data for processing
-            std::copy(hs_left_.data_q.begin(), hs_left_.data_q.end(), hs_left_copy.begin());
-            std::copy(hs_right_.data_q.begin(), hs_right_.data_q.end(), hs_right_copy.begin());
-            std::copy(body_.data_q.begin(), body_.data_q.end(), body_copy.begin());
+            hs_left_.data_q.swap(hs_left_copy);
+            hs_right_.data_q.swap(hs_right_copy);
+            body_.data_q.swap(body_copy);
             // Clear deque
             hs_left_.data_q.clear();
             hs_right_.data_q.clear();
