@@ -1,17 +1,10 @@
 #include <thread>
 #include <mutex>
-#include <chrono>
-#include <condition_variable>
-#include <atomic>
 #include <deque>
 #include <signal.h>
 
-
 #include "ros/ros.h"
 #include "geometry_msgs/PoseArray.h"
-#include <message_filters/subscriber.h>
-#include <message_filters/synchronizer.h>
-#include <message_filters/sync_policies/approximate_time.h>
 
 class SkeletonProcessing
 {
@@ -31,24 +24,6 @@ class SkeletonProcessing
     */
    ~SkeletonProcessing();
 
-    /*! @brief getter for hand skeleton (left).
-    *
-    *  @param geometry_msgs::PoseArrayConstPtr - The PoseArray message to store the data in
-    */
-   void get_hs_left(std::deque<geometry_msgs::PoseArray> &hs_left_q);
-
-    /*! @brief getter for hand skeleton (right).
-    *
-    *  @param geometry_msgs::PoseArrayConstPtr - The PoseArray message to store the data in
-    */
-   void get_hs_right(std::deque<geometry_msgs::PoseArray> &hs_right_q);
-
-    /*! @brief getter for body skeleton.
-    *
-    *  @param geometry_msgs::PoseArrayConstPtr - The PoseArray message to store the data in
-    */
-   void get_body(std::deque<geometry_msgs::PoseArray> &body_q);
-
     private:
     /*! @brief Callback for receiving left hand data
     *
@@ -67,17 +42,31 @@ class SkeletonProcessing
     *  @param geometry_msgs::PoseArrayConstPtr - The PoseArray message
     */
    void body_callback(const geometry_msgs::PoseArrayConstPtr& msg);
-   
-    std::shared_ptr<ros::NodeHandle> nh_;
-    ros::Subscriber hs_left_subs_, hs_right_subs_, body_subs_;
-    
-    std::deque<geometry_msgs::PoseArray> empty_q_;
 
-    struct SkelData
+    /*! @brief
+    Publish data at a rate of >=30hz. 30hz if there is consistent measurements. Can be longer otherwise
+    */
+   void publish_data();
+
+    /*! @brief
+    Look for matching data measurements. Ensures the measurements are less than or equal to 1/30 seconds of the most recent measurement.
+    If no matching measurement is found, poses in matching data is cleared
+    @param ts: most recent ts
+    @param data2: the data measurement where we will find a matching data
+    @param matching_data: data that matches (or closest to matching) the given timestamp within 30ms
+    */
+   void find_match(const double &ts, std::deque<geometry_msgs::PoseArray> &data2, geometry_msgs::PoseArray &matching_data);
+   
+    std::shared_ptr<ros::NodeHandle> nh_;  // Node handle
+    ros::Subscriber hs_left_subs_, hs_right_subs_, body_subs_;  // Subscribers
+    ros::Publisher hs_left_pub_, hs_right_pub_, body_pub_;  // Publishers
+
+    std::thread *pub_thread_;  // Main thread of execution for publishing data    
+
+    struct SkelData  // Thread safe data buffer
     {
         std::deque<geometry_msgs::PoseArray> data_q;
         std::mutex mtx;
     } hs_left_, hs_right_, body_;
-
 
 };
