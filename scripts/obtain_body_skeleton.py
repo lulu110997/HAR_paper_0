@@ -10,14 +10,15 @@ from geometry_msgs.msg import PoseArray, Pose
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge
 
+rospy.init_node("body_tracking")
 MILLISECONDS = 1000.0
 VISUALISE_DEPTH = 0
 VISUALISE_COLOR = 0
 Q_SIZE = 30
-rospy.init_node("body_tracking")
+########################################################################################################################
+bridge = CvBridge()
 image_pub = rospy.Publisher("nuitrack_rgb_img", Image, queue_size=Q_SIZE)
 skel_pub = rospy.Publisher("nuitrack_skel_data", PoseArray, queue_size=Q_SIZE)
-bridge = CvBridge()
 
 
 def create_T_matrix(rmatr, tvec):
@@ -103,6 +104,7 @@ def init_nuitrack():
     nuitrack.init()
 
     # Configure settings of /usr/etc/nuitrack/data/nuitrack.config
+    # https://community.nuitrack.com/t/body-skeleton-tracking-identifies-more-than-one-skeleton/3505/2
     nuitrack.set_config_value("DepthProvider.Depth2ColorRegistration", "true")  # Not sure what this does
     nuitrack.set_config_value("Skeletonization.Type", "CNN_HPE")  # Uses deep learning for skeleton tracking
     nuitrack.set_config_value("Skeletonization.MaxDistance", "1700")  # Max distance (mm) to look for skeleton

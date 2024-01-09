@@ -1,30 +1,23 @@
 #!/usr/bin/python3
-import sys
-import time
 import cv2
 import mediapipe as mp
 from mediapipe.tasks import python as tasks
-from mediapipe.tasks import python
-from mediapipe.tasks.python import vision
 import numpy as np
 import pyrealsense2 as rs
 import rospy
-from threading import Thread, Lock
 from cv_bridge import CvBridge
 from sensor_msgs.msg import Image
 from geometry_msgs.msg import PoseArray, Pose
-from collections import deque
 
-rospy.init_node("hand_tracking")
+rospy.init_node("hand_tracking", anonymous=True)
 Q_SIZE = 60
+MILLISECONDS = 1000.0
 RS_SN = '027322071961'
-# RS_SN = '017322070251'
-ns_dict = {"ns": deque(), "lock": Lock()}
+########################################################################################################################
 bridge = CvBridge()
 image_pub = rospy.Publisher("mp_rgb_img", Image, queue_size=Q_SIZE)
 left_hand_pub = rospy.Publisher("left_hand_skel_data", PoseArray, queue_size=Q_SIZE)
 right_hand_pub = rospy.Publisher("right_hand_skel_data", PoseArray, queue_size=Q_SIZE)
-MILLISECONDS = 1000.0
 
 # Setup mediapipe
 BaseOptions = mp.tasks.BaseOptions
@@ -38,7 +31,6 @@ def init_rs():
     pipeline = rs.pipeline()
     config = rs.config()
     config.enable_device(RS_SN)
-    # config.enable_stream(rs.stream.color, 1920, 1080, rs.format.bgra8, 30)
     config.enable_stream(rs.stream.color, 848, 480, rs.format.bgra8, 60)
     cfg = pipeline.start(config)
 

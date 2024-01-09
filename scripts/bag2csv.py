@@ -1,12 +1,26 @@
+"""
+Script for converting a ROS bag into a csv file
+python3 bags2csv.py bag_name
+"""
 import numpy as np
 import os
 import pandas as pd
 import rospy
 import rosbag
+import sys
 
-BAG_NAME = "test3_userA.bag"
+if len(sys.argv) != 2:
+    raise Exception("Input bag name only")
+
+BAG_NAME = sys.argv[1]
 ########################################################################################################################
+if BAG_NAME[-4:] != ".bag":
+    BAG_NAME = BAG_NAME + ".bag"  # Add extension if bag name does not contain it
+
 BAG_PATH = os.path.join("../Fernandez_HAR/bags/", BAG_NAME)
+if not os.path.isfile(BAG_PATH):
+    raise Exception(f"{os.path.abspath(BAG_PATH)} is not a valid file. Check bag is saved in the correct dir or that bag name is correct")
+
 SAVE_PATH = os.path.join("../Fernandez_HAR/experiment_csvs/", BAG_NAME.replace('.bag', ""))
 # Create save dir if it doesn't exist
 if not os.path.exists(SAVE_PATH):
@@ -41,7 +55,7 @@ def hs_data_to_csv():
                 skel_data = body_skel
                 WIDTH = 640
                 HEIGHT = 480
-                DEPTH = 1850
+                DEPTH = 1900
 
             else:
                 raise "Unknown topic"
@@ -66,4 +80,7 @@ def hs_data_to_csv():
     df.to_csv(os.path.join(SAVE_PATH, "body_skeleton.csv"), header=False)
 
 
-hs_data_to_csv()
+if __name__ == "__main__":
+    # hs_data_to_csv()
+    print(__name__)
+    print(f"Saved csv files to {SAVE_PATH}")
