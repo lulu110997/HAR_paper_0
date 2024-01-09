@@ -16,7 +16,7 @@ from geometry_msgs.msg import PoseArray, Pose
 from collections import deque
 
 rospy.init_node("hand_tracking")
-Q_SIZE = 15
+Q_SIZE = 60
 RS_SN = '027322071961'
 # RS_SN = '017322070251'
 ns_dict = {"ns": deque(), "lock": Lock()}
