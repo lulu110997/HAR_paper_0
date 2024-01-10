@@ -1,10 +1,13 @@
-#!/usr/bin/env python3.7
+#!/usr/bin/env python3.8
 # -*- coding: utf-8 -*-
-
+import sys
 import pandas as pd
 import os
 
-FILENAME = "test0_userB/body_skeleton_normalised.csv"
+if len(sys.argv) != 3:
+    raise Exception("Please check number of inputs is correct")
+
+FILENAME = f"{sys.argv[1]}/{sys.argv[2]}.csv"
 ########################################################################################################################
 PATH = "/home/louis/Git/HAR_paper_0/Fernandez_HAR/experiment_csvs/"
 FILEPATH = os.path.join(PATH, FILENAME)
@@ -44,4 +47,6 @@ def rename():
     new_path = FILEPATH.replace(".csv", "_renamed.csv")
     df2.to_csv(new_path, index=False)
 
-rename()
+
+if __name__ == '__main__':
+    rename()
