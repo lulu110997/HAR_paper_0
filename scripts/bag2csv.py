@@ -38,7 +38,7 @@ def hs_data_to_csv():
     body_skel = {'time': [], 'data': []}
 
     with rosbag.Bag(BAG_PATH) as bag:
-        for topic, msg, __ in bag.read_messages(topics=['/hs_left_matched', '/hs_right_matched', '/body_matched']):
+        for topic, msg, bag_time in bag.read_messages(topics=['/hs_left_matched', '/hs_right_matched', '/body_matched']):
             if rospy.is_shutdown():
                 break
             joint_lists = []  # Store the joint locations for this timestep
@@ -55,7 +55,7 @@ def hs_data_to_csv():
                 skel_data = body_skel
                 WIDTH = 640
                 HEIGHT = 480
-                DEPTH = 1900
+                DEPTH = 1600
 
             else:
                 raise "Unknown topic"
@@ -65,9 +65,16 @@ def hs_data_to_csv():
                 joint_lists.extend([joints.position.x/WIDTH, joints.position.y/HEIGHT, joints.position.z/DEPTH,
                                     joints.orientation.x, joints.orientation.y, joints.orientation.z,
                                     joints.orientation.w,])
-            if (np.abs(np.array(joint_lists)) > 1.1).any():  # Check all values are normalised. Some values are 1.00001
-                np.set_printoptions(precision=4, suppress=True)
-                raise Exception(f"smth not normalised. WIDTH={WIDTH}. \n{np.array(joint_lists).reshape(-1,7)}")
+            # Kinect data can be noisy giving >2m depth val. When this happens, cap z value to 1
+            joint_lists = np.array(joint_lists)
+            joint_lists = np.where(joint_lists > 1.0, 1.0, joint_lists)
+
+            # if (np.abs(np.array(joint_lists)) > 1.1).any():  # Check all values are normalised. Some values are 1.0001
+                # np.set_printoptions(precision=4, suppress=True)
+                # print(f"z: {joints.position.z}, idx: {idx}")
+                # print(f"msg ts: {skel_data['time'][-1]}")
+                # print(f"bagtime: {bag_time.to_sec()}")
+                # raise Exception(f"smth not normalised. WIDTH={WIDTH}. \n{np.array(joint_lists).reshape(-1,7)}")
 
             skel_data["data"].append(joint_lists)  # Add to the appropriate df
 
@@ -81,6 +88,5 @@ def hs_data_to_csv():
 
 
 if __name__ == "__main__":
-    # hs_data_to_csv()
-    print(__name__)
+    hs_data_to_csv()
     print(f"Saved csv files to {SAVE_PATH}")
