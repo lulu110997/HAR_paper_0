@@ -5,26 +5,10 @@ import os
 import constants as _cs
 
 PATH = "../Fernandez_HAR/experiment_csvs/"
-USER = "test3_userA/"
+USER = "test2_userA/"
 # FILENAME = "body_skeleton.csv"
 # FILENAME = "hs_left.csv"
 FILENAME = "hs_right.csv"
-########################################################################################################################
-FILEPATH = os.path.join(PATH, USER, FILENAME)
-if not os.path.isfile(FILEPATH):
-    print(FILEPATH)
-
-SAVE_IMG_PATH = PATH.replace("experiment_csvs", "results")
-SAVE_IMG_PATH = os.path.join(SAVE_IMG_PATH, USER)
-if not os.path.exists(SAVE_IMG_PATH):
-    os.makedirs(os.path.join(SAVE_IMG_PATH, "hs_left"))
-    os.makedirs(os.path.join(SAVE_IMG_PATH, "hs_right"))
-    os.makedirs(os.path.join(SAVE_IMG_PATH, "body_skeleton"))
-
-STEP = 7  # Used to iterate through the joint features
-df = pd.read_csv(FILEPATH, header=None)
-df = df.fillna(0)
-
 
 # f1 = [1704786281.00035, 1704786295.00036]
 # f2 = [1704786299.00036, 1704786327.00036]
@@ -46,21 +30,46 @@ f7 = [5662, 5962]
 f8 = [6082, 6382]
 m1 = [6682, 7042]
 c1 = [7192, 7612]
+########################################################################################################################
+def find_short_long(a_list):
+    """
+    Looks for the shortest and longest duration for fastening
+    Args:
+        a_list: list | list of list containing the indexes (start, stop) of each action
+    Returns: tuple | (longest, shortest)
+    """
+    min_t = 1000
+    max_t = 0
+    for i in a_list:
+        delta = i[1] - i[0]
+        if delta > max_t:
+            max_t = delta
+            max_ = i[:]
+        if delta < min_t:
+            min_t = delta
+            min_ = i[:]
+    return (max_, min_)
 
-# actions_csv_idx = [f1, f2, f3, f4, f5, f6, f7, f8]
-# for i in actions_csv_idx:
-#     print(i[1] - i[0])
-#     print(i)
+FILEPATH = os.path.join(PATH, USER, FILENAME)
+if not os.path.isfile(FILEPATH):
+    print(FILEPATH)
 
-# axs[0, 0].plot(x, y)
-# axs[0, 1].plot(x, y, 'tab:orange')
-# axs[0, 1].set_title('Axis [0, 1]')
-# axs[1, 0].plot(x, -y, 'tab:green')
-# axs[1, 0].set_title('Axis [1, 0]')
-# axs[1, 1].plot(x, -y, 'tab:red')
-# axs[1, 1].set_title('Axis [1, 1]')
-actions_measurements = [f6, f5, m1, c1]
-action_names = ["f_least", "f_most", "measure", "cut"]
+SAVE_IMG_PATH = PATH.replace("experiment_csvs", "results")
+SAVE_IMG_PATH = os.path.join(SAVE_IMG_PATH, USER)
+if not os.path.exists(SAVE_IMG_PATH):
+    os.makedirs(os.path.join(SAVE_IMG_PATH, "hs_left"))
+    os.makedirs(os.path.join(SAVE_IMG_PATH, "hs_right"))
+    os.makedirs(os.path.join(SAVE_IMG_PATH, "body_skeleton"))
+
+STEP = 7  # Used to iterate through the joint features
+df = pd.read_csv(FILEPATH, header=None)
+df = df.fillna(0)
+
+actions_csv_idx = [f1, f2, f3, f4, f5, f6, f7, f8]
+f_action = find_short_long(actions_csv_idx)
+
+actions_measurements = [f_action[0], f_action[1], m1, c1]
+action_names = ["f_shortest", "f_longest", "measure", "cut"]
 
 # Initialise some vars for extracting and plotting features
 joint_name_counter = 0
