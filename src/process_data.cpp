@@ -51,6 +51,7 @@ void SkeletonProcessing::publish_data()
     geometry_msgs::PoseArray hs_left_matching;
     geometry_msgs::PoseArray hs_right_matching;
     geometry_msgs::PoseArray body_matching;
+    ros::Time time_now = ros::Time().now();
 
     while (ros::ok())
     {
@@ -94,6 +95,7 @@ void SkeletonProcessing::publish_data()
             {
                 // The left hand is more recent, find closest corresponding data for right/body within 30ms
                 hs_left_matching = hs_left_copy.back();
+                time_now.fromSec(hs_left_time);
                 find_match(hs_left_time, hs_right_copy, hs_right_matching);
                 find_match(hs_left_time, body_copy, body_matching);
                     
@@ -103,6 +105,7 @@ void SkeletonProcessing::publish_data()
             {
                 // The right hand is more recent, find corresponding data for left/body within 30ms
                 hs_right_matching = hs_right_copy.back();
+                time_now.fromSec(hs_right_time);
                 find_match(hs_right_time, hs_left_copy, hs_left_matching);
                 find_match(hs_right_time, body_copy, body_matching);
 
@@ -113,6 +116,7 @@ void SkeletonProcessing::publish_data()
             {
                 // The body skeleton is more recent, find corresponding data for hands skeleton within 30ms
                 body_matching = body_copy.back();
+                time_now.fromSec(body_time);
                 find_match(body_time, hs_left_copy, hs_left_matching);
                 find_match(body_time, hs_right_copy, hs_right_matching);
             }
@@ -125,8 +129,7 @@ void SkeletonProcessing::publish_data()
                 ros::shutdown();
             }
 
-            // Replace the ts of the measurements to now so that they match and then publish
-            ros::Time time_now = ros::Time().now();
+            // Replace the ts of the measurements based on the 'base' measurement and then publish
             hs_left_matching.header.stamp = time_now;
             hs_right_matching.header.stamp = time_now;
             body_matching.header.stamp = time_now;
@@ -163,6 +166,6 @@ void SkeletonProcessing::find_match(const double &ts, std::deque<geometry_msgs::
             }
         }
     }
-    else {matching_data.poses.clear();} // No new data. Clear corresponding matching variable to ensure any saved data is not published
+    // else {matching_data.poses.clear();} // No new data. Clear corresponding matching variable to ensure any saved data is not published
     
 }
