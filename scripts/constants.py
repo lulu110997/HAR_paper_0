@@ -96,7 +96,7 @@
 #                 }
 
 # Names of skeletal joints
-JOINT_NAMES = ["HEAD",
+BODY_JOINTS = ["HEAD",
                "NECK",
                "TORSO",
                "WAIST",
@@ -134,3 +134,12 @@ UPPER_JOINTS = ["HEAD",
                 "RIGHT_WRIST",
                 "RIGHT_HAND"
                 ]
+
+
+# Skeletal joints of the hands
+HAND_JOINTS = ["WRIST",
+               "THUMB_CMC", "THUMB_MCP", "THUMB_IP", "THUMB_TPI",
+               "INDEX_MCP", "INDEX_PIP", "INDEX_DIP", "INDEX_TIP",
+               "MIDDLE_MCP", "MIDDLE_PIP", "MIDDLE_DIP", "MIDDLE_TIP",
+               "RING_MCP", "RING_PIP", "RING_DIP", "RING_TIP",
+               "PINKY_MCP", "PINKY_PIP", "PINKY_DIP", "PINKY_TIP"]
